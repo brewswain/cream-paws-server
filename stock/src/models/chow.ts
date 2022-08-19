@@ -61,18 +61,28 @@ interface ChowModel extends mongoose.Model<ChowDoc> {
    build(attrs: ChowAttrs): ChowDoc;
 }
 
-const chowSchema = new mongoose.Schema({
-   brand: { type: String, required: true },
-   target_group: { type: String, required: true },
-   flavour: { type: String, required: true },
-   size: { type: Number, required: true },
-   unit: { type: String, required: true },
-   quantity_available: { type: Number, required: true },
-   wholesale_price: { type: Number, required: true },
-   retail_price: { type: Number, required: true },
-   is_paid_for: { type: Boolean, required: true },
-   id: { type: String, required: true },
-});
+const chowSchema = new mongoose.Schema(
+   {
+      brand: { type: String, required: true },
+      target_group: { type: String, required: true },
+      flavour: { type: String, required: true },
+      size: { type: Number, required: true },
+      unit: { type: String, required: true },
+      quantity_available: { type: Number, required: true },
+      wholesale_price: { type: Number, required: true },
+      retail_price: { type: Number, required: true },
+      is_paid_for: { type: Boolean, required: true },
+      id: { type: String, required: true },
+   },
+   {
+      toJSON: {
+         transform(doc, ret) {
+            ret.id = ret._id;
+            delete ret._id;
+         },
+      },
+   }
+);
 
 chowSchema.statics.build = (attrs: ChowAttrs) => {
    return new Chow(attrs);
