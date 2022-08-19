@@ -6,6 +6,7 @@ import { json } from "body-parser";
 import cookieSession from "cookie-session";
 
 import { NotFoundError, errorHandler } from "@cream-paws-util/common";
+import { listAllChowRouter } from "./routes/list-all-chow";
 
 export const app = express();
 // Traffic is proxied to our app through ingress nginx so we need this setting
@@ -19,6 +20,8 @@ app.use(
       secure: true,
    })
 );
+
+app.use(listAllChowRouter);
 
 // Looks for any requests that don't exist to throw our 404.
 app.all("*", async () => {

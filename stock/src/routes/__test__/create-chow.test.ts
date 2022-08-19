@@ -1,22 +1,22 @@
 import request from "supertest";
 
 import { app } from "../../app";
-import { Ticket } from "../../models/ticket";
+import { Chow } from "../../models/chow";
 
-it("Has a route handler listening to /api/tickets for POST requests", async () => {
-   const response = await request(app).post("/api/tickets").send({});
+it("Has a route handler listening to /api/stock for POST requests", async () => {
+   const response = await request(app).post("/api/stock").send({});
 
    // once we don't get a 404 we're happy
    expect(response.status).not.toEqual(404);
 });
 
 it("Can only be accessed if the user is signed in", async () => {
-   await request(app).post("/api/tickets").send({}).expect(401);
+   await request(app).post("/api/stock").send({}).expect(401);
 });
 
 it("Returns a status other than 401 if the user is signed in", async () => {
    const response = await request(app)
-      .post("/api/tickets")
+      .post("/api/stock")
       .set("Cookie", global.signup())
       .send({});
 
@@ -25,7 +25,7 @@ it("Returns a status other than 401 if the user is signed in", async () => {
 
 it("Returns an error if invalid title is provided", async () => {
    await request(app)
-      .post("/api/tickets")
+      .post("/api/stock")
       .set("Cookie", global.signup())
       .send({
          title: "",
@@ -36,7 +36,7 @@ it("Returns an error if invalid title is provided", async () => {
 
 it("Returns an error if an invalid price is provided", async () => {
    await request(app)
-      .post("/api/tickets")
+      .post("/api/stock")
       .set("Cookie", global.signup())
       .send({
          title: "ewrwrwe",
@@ -45,7 +45,7 @@ it("Returns an error if an invalid price is provided", async () => {
       .expect(400);
 
    await request(app)
-      .post("/api/tickets")
+      .post("/api/stock")
       .set("Cookie", global.signup())
       .send({
          title: "ewrwrwe",
@@ -54,12 +54,12 @@ it("Returns an error if an invalid price is provided", async () => {
 });
 
 it("Creates a ticket with valid inputs", async () => {
-   // Finds all of our tickets.
-   let tickets = await Ticket.find({});
-   expect(tickets.length).toEqual(0);
+   // Finds all of our chow.
+   let chow = await Chow.find({});
+   expect(chow.length).toEqual(0);
 
    await request(app)
-      .post("/api/tickets")
+      .post("/api/stock")
       .set("Cookie", global.signup())
       .send({
          title: "dfds",
@@ -67,6 +67,6 @@ it("Creates a ticket with valid inputs", async () => {
       })
       .expect(201);
 
-   tickets = await Ticket.find({});
-   expect(tickets.length).toEqual(1);
+   chow = await Chow.find({});
+   expect(chow.length).toEqual(1);
 });
