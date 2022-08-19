@@ -1,0 +1,2 @@
+-  Delivery tracking
+-  Is josh paid/keep a running tally, maybe something that keeps a tally up to a month and pings when time is approaching--talk to karin about payment windows
