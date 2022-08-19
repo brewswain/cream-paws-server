@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+   name: stock-depl
+spec:
+   replicas: 1
+   selector:
+      matchLabels:
+         app: stock
+   template:
+      metadata:
+         labels:
+            app: stock
+      spec:
+         containers:
+            - name: stock
+              image: brewswain/cream-paws-stock
+              env:
+                 - name: JWT_KEY
+                   valueFrom:
+                      secretKeyRef:
+                         name: jwt-secret
+                         key: JWT_KEY
+                 - name: MONGO_URI
+                   value: "mongodb://stock-mongo-srv:27017/stock"
+---
+apiVersion: v1
+kind: Service
+metadata:
+   name: stock-srv
+spec:
+   selector:
+      app: stock
+   ports:
+      - name: stock
+        protocol: TCP
+        port: 3000
+        targetPort: 3000

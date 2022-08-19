@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+   name: cream-paws-auth-depl
+spec:
+   replicas: 1
+   selector:
+      matchLabels:
+         app: cream-paws-auth
+   template:
+      metadata:
+         labels:
+            app: cream-paws-auth
+      spec:
+         containers:
+            - name: cream-paws-auth
+              image: brewswain/cream-paws-auth
+              env:
+                 - name: JWT_KEY
+                   valueFrom:
+                      secretKeyRef:
+                         name: jwt-secret
+                         key: JWT_KEY
+                 - name: MONGO_URI
+                   value: "mongodb://auth-mongo-srv:27017/auth"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+   name: cream-paws-auth-srv
+spec:
+   selector:
+      app: cream-paws-auth
+   ports:
+      - name: cream-paws-auth
+        protocol: TCP
+        port: 3000
+        targetPort: 3000
