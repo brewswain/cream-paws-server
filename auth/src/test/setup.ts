@@ -14,8 +14,8 @@ beforeAll(async () => {
    //TODO: please remove this lol
    process.env.JWT_KEY = "oIqkHeuCkVEuddoR9ktSmhViiu0Oo14Q";
 
-   mongo = new MongoMemoryServer();
-   const mongoUri = await mongo.getUri();
+   mongo = await MongoMemoryServer.create();
+   const mongoUri = mongo.getUri();
 
    await mongoose.connect(mongoUri);
 });
@@ -32,7 +32,7 @@ beforeEach(async () => {
 // After we run our tests we want to stop our server
 afterAll(async () => {
    await mongo.stop();
-   await mongo.connection.close();
+   await mongoose.connection.close();
 });
 
 global.signup = async () => {
@@ -40,11 +40,13 @@ global.signup = async () => {
    const password = "password";
 
    const response = await request(app)
-      .post("/api/uusers/signup")
-      .send({ email, password })
+      .post("/api/users/signup")
+      .send({
+         email,
+         password,
+      })
       .expect(201);
 
    const cookie = response.get("Set-Cookie");
-
    return cookie;
 };
