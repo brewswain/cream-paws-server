@@ -24,3 +24,19 @@ build:
            manual:
               - src: "src/**/*.ts"
                 dest: .
+      - image: brewswain/cream-paws-customers
+        context: customers
+        docker:
+           dockerfile: Dockerfile
+        sync:
+           manual:
+              - src: "src/**/*.ts"
+                dest: .
+      - image: brewswain/cream-paws-orders
+        context: orders
+        docker:
+           dockerfile: Dockerfile
+        sync:
+           manual:
+              - src: "src/**/*.ts"
+                dest: .

@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+   name: customers-depl
+spec:
+   replicas: 1
+   selector:
+      matchLabels:
+         app: customers
+   template:
+      metadata:
+         labels:
+            app: customers
+      spec:
+         containers:
+            - name: customers
+              image: brewswain/cream-paws-customers
+              env:
+                 - name: JWT_KEY
+                   valueFrom:
+                      secretKeyRef:
+                         name: jwt-secret
+                         key: JWT_KEY
+                 - name: MONGO_URI
+                   value: "mongodb://customers-mongo-srv:27017/customers"
+---
+apiVersion: v1
+kind: Service
+metadata:
+   name: customers-srv
+spec:
+   selector:
+      app: customers
+   ports:
+      - name: customers
+        protocol: TCP
+        port: 3000
+        targetPort: 3000
