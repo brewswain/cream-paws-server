@@ -23,32 +23,12 @@ it("Returns a status other than 401 if the user is signed in", async () => {
    expect(response.status).not.toEqual(401);
 });
 
-it("Returns an error if invalid title is provided", async () => {
+it("Returns an error if invalid information is provided", async () => {
    await request(app)
       .post("/api/stock")
       .set("Cookie", global.signup())
       .send({
          title: "",
-         price: 10,
-      })
-      .expect(400);
-});
-
-it("Returns an error if an invalid price is provided", async () => {
-   await request(app)
-      .post("/api/stock")
-      .set("Cookie", global.signup())
-      .send({
-         title: "ewrwrwe",
-         price: -10,
-      })
-      .expect(400);
-
-   await request(app)
-      .post("/api/stock")
-      .set("Cookie", global.signup())
-      .send({
-         title: "ewrwrwe",
       })
       .expect(400);
 });
@@ -62,8 +42,15 @@ it("Creates a ticket with valid inputs", async () => {
       .post("/api/stock")
       .set("Cookie", global.signup())
       .send({
-         title: "dfds",
-         price: 20,
+         brand: "Taste of The Wild",
+         target_group: "Puppy",
+         flavour: "Puppy",
+         size: 20,
+         unit: "kg",
+         quantity: 5,
+         wholesale_price: 20,
+         retail_price: 30,
+         is_paid_for: false,
       })
       .expect(201);
 

@@ -37,11 +37,10 @@ interface ChowAttrs {
    flavour: ChowLine;
    size: number;
    unit: ChowUnit;
-   quantity_available: number;
+   quantity: number;
    wholesale_price: number;
    retail_price: number;
    is_paid_for: boolean;
-   id: string;
 }
 
 interface ChowDoc extends mongoose.Document {
@@ -50,11 +49,10 @@ interface ChowDoc extends mongoose.Document {
    flavour: ChowLine;
    size: number;
    unit: ChowUnit;
-   quantity_available: number;
+   quantity: number;
    wholesale_price: number;
    retail_price: number;
    is_paid_for: boolean;
-   id: string;
 }
 
 interface ChowModel extends mongoose.Model<ChowDoc> {
@@ -68,11 +66,10 @@ const chowSchema = new mongoose.Schema(
       flavour: { type: String, required: true },
       size: { type: Number, required: true },
       unit: { type: String, required: true },
-      quantity_available: { type: Number, required: true },
+      quantity: { type: Number, required: true },
       wholesale_price: { type: Number, required: true },
       retail_price: { type: Number, required: true },
       is_paid_for: { type: Boolean, required: true },
-      id: { type: String, required: true },
    },
    {
       toJSON: {

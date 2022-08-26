@@ -5,8 +5,15 @@ import "express-async-errors";
 import { json } from "body-parser";
 import cookieSession from "cookie-session";
 
-import { NotFoundError, errorHandler } from "@cream-paws-util/common";
-import { listAllChowRouter } from "./routes/list-all-chow";
+import {
+   NotFoundError,
+   errorHandler,
+   currentUserMiddleware,
+} from "@cream-paws-util/common";
+import { getAllChowRouter } from "./routes/get-all-chow";
+import { createChowRouter } from "./routes/create-chow";
+import { findChowRouter } from "./routes/find-chow";
+import { updateChowRouter } from "./routes/update-chow";
 
 export const app = express();
 // Traffic is proxied to our app through ingress nginx so we need this setting
@@ -20,8 +27,12 @@ app.use(
       secure: true,
    })
 );
+app.use(currentUserMiddleware);
 
-app.use(listAllChowRouter);
+app.use(getAllChowRouter);
+app.use(createChowRouter);
+app.use(updateChowRouter);
+app.use(findChowRouter);
 
 // Looks for any requests that don't exist to throw our 404.
 app.all("*", async () => {

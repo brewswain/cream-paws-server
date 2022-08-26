@@ -10,4 +10,4 @@ router.get("/api/stock", async (req: Request, res: Response) => {
    res.send(chow);
 });
 
-export { router as listAllChowRouter };
+export { router as getAllChowRouter };
