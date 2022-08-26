@@ -49,7 +49,6 @@ router.post(
       };
 
       req.session.jwt = userJwt;
-
       res.status(201).send(user);
    }
 );

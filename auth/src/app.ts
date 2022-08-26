@@ -10,7 +10,11 @@ import { signInRouter } from "./routes/signin";
 import { signUpRouter } from "./routes/signup";
 import { signOutRouter } from "./routes/signout";
 
-import { NotFoundError, errorHandler } from "@cream-paws-util/common";
+import {
+   NotFoundError,
+   errorHandler,
+   currentUserMiddleware,
+} from "@cream-paws-util/common";
 
 export const app = express();
 // Traffic is proxied to our app through ingress nginx so we need this setting
@@ -24,6 +28,8 @@ app.use(
       secure: true,
    })
 );
+
+app.use(currentUserMiddleware);
 
 app.use(currentUserRouter);
 app.use(signUpRouter);
