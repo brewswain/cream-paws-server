@@ -30,6 +30,12 @@ app.use(
 );
 app.use(currentUserMiddleware);
 
+app.use(createCustomerRouter);
+app.use(findCustomerRouter);
+app.use(getCustomersRouter);
+app.use(updateCustomerRouter);
+app.use(deleteCustomerRouter);
+
 // Looks for any requests that don't exist to throw our 404.
 app.all("*", async () => {
    throw new NotFoundError();
