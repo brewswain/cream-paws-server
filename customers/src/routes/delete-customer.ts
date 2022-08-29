@@ -5,6 +5,8 @@ import {
    validateRequest,
 } from "@cream-paws-util/common";
 import { Customer } from "../models/customer";
+import { CustomerDeletedPublisher } from "../events/publishers/customer-deleted-publisher";
+import { natsWrapper } from "../nats-wrapper";
 
 const router = express.Router();
 
@@ -12,13 +14,17 @@ router.delete(
    "/api/customer/:id",
    [requireAuth, validateRequest],
    async (req: Request, res: Response) => {
+      const customerId = req.params.id;
+
       await Customer.deleteOne({
-         id: req.params.id,
+         id: customerId,
       });
 
-      res.status(200).send(
-         `Customer id: ${req.params.id} successfully deleted.`
-      );
+      new CustomerDeletedPublisher(natsWrapper.client).publish({
+         id: customerId,
+      });
+
+      res.status(200).send(`Customer id: ${customerId} successfully deleted.`);
    }
 );
 
