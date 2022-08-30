@@ -5,10 +5,14 @@ import { Order } from "../models/order";
 
 const router = express.Router();
 
-router.get("/api/orders", async (req: Request, res: Response) => {
-   const orders = await Order.find({});
+router.get(
+   "/api/orders",
+   [requireAuth, validateRequest],
+   async (req: Request, res: Response) => {
+      const orders = await Order.find({});
 
-   res.send(orders);
-});
+      res.send(orders);
+   }
+);
 
 export { router as getAllOrdersRouter };
