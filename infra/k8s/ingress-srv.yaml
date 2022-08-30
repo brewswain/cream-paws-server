@@ -35,6 +35,6 @@ spec:
                 pathType: Prefix
                 backend:
                    service:
-                      name: customers-srv
+                      name: cream-paws-orders-srv
                       port:
                          number: 3000

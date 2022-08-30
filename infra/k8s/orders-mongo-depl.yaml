@@ -1,28 +1,28 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-   name: orders-mongo-depl
+   name: cream-paws-orders-mongo-depl
 spec:
    replicas: 1
    selector:
       matchLabels:
-         app: orders-mongo
+         app: cream-paws-orders-mongo
    template:
       metadata:
          labels:
-            app: orders-mongo
+            app: cream-paws-orders-mongo
       spec:
          containers:
-            - name: orders-mongo
+            - name: cream-paws-orders-mongo
               image: mongo
 ---
 apiVersion: v1
 kind: Service
 metadata:
-   name: orders-mongo-srv
+   name: cream-paws-orders-mongo-srv
 spec:
    selector:
-      app: orders-mongo
+      app: cream-paws-orders-mongo
    ports:
       - name: db
         protocol: TCP
