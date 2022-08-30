@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 import { ClassStaticBlockDeclaration } from "typescript";
+import { ChowDoc } from "./chow";
+import { CustomerDoc } from "./customer";
 
 interface OrderAttrs {
    delivery_date: string;
