@@ -33,6 +33,7 @@ router.put(
          id: customer.id,
          name: customer.name,
          pets: customer.pets,
+         version: customer.version,
       });
 
       res.send(customer);

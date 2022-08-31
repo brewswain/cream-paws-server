@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { updateIfCurrentPlugin } from "mongoose-update-if-current";
 
 enum ChowTargetGroup {
    Puppy = "Puppy",
@@ -53,6 +54,7 @@ interface ChowDoc extends mongoose.Document {
    wholesale_price: number;
    retail_price: number;
    is_paid_for: boolean;
+   version: number;
 }
 
 interface ChowModel extends mongoose.Model<ChowDoc> {
@@ -80,6 +82,9 @@ const chowSchema = new mongoose.Schema(
       },
    }
 );
+
+chowSchema.set("versionKey", "version");
+chowSchema.plugin(updateIfCurrentPlugin);
 
 chowSchema.statics.build = (attrs: ChowAttrs) => {
    return new Chow(attrs);

@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { updateIfCurrentPlugin } from "mongoose-update-if-current";
 
 interface CustomerAttrs {
    name: string;
@@ -8,6 +9,7 @@ interface CustomerAttrs {
 interface CustomerDoc extends mongoose.Document {
    name: string;
    pets?: string[];
+   version: number;
 }
 
 interface CustomerModel extends mongoose.Model<CustomerDoc> {
@@ -28,6 +30,9 @@ const customerSchema = new mongoose.Schema(
       },
    }
 );
+
+customerSchema.set("versionKey", "version");
+customerSchema.plugin(updateIfCurrentPlugin);
 
 customerSchema.statics.build = (attrs: CustomerAttrs) => {
    return new Customer(attrs);

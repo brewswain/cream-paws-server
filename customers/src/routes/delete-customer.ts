@@ -16,12 +16,19 @@ router.delete(
    async (req: Request, res: Response) => {
       const customerId = req.params.id;
 
+      const customer = await Customer.findById(customerId);
+
+      if (!customer) {
+         throw new NotFoundError();
+      }
+
       await Customer.deleteOne({
          id: customerId,
       });
 
       new CustomerDeletedPublisher(natsWrapper.client).publish({
          id: customerId,
+         version: customer.version,
       });
 
       res.status(200).send(`Customer id: ${customerId} successfully deleted.`);

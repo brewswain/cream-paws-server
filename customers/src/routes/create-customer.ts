@@ -27,7 +27,9 @@ router.post(
          id: customer.id,
          name: customer.name,
          pets: customer.pets || [],
+         version: customer.version,
       });
+
       res.status(201).send(customer);
    }
 );
