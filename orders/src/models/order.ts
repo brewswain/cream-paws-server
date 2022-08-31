@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { ClassStaticBlockDeclaration } from "typescript";
 import { ChowDoc } from "./chow";
 import { CustomerDoc } from "./customer";
 
@@ -15,7 +14,23 @@ interface OrderAttrs {
    // Current thought is that we'll want a customer who'll be linked to this Order, as well as
    // the actual contents of said order. That being said, final vision might be Just Stock
    // linked here, and then Order becomes an optional parameter in our Customers service itself.
-   customer: CustomerDoc;
+
+   // The more I think about it, the more I think the latter makes more sense, but the former
+   // allows us to have a cool list of orders used by people for data analysis?
+
+   // TODO:
+   // Actually, we can do it like this:
+   // We make an order for a customer here.
+   // The order service creates our order, populates our chow, and adds it to our customer here.
+   // we then produce an Order:Added-To-Customer event, and emit an event with the customerId
+   // or even just do a Customer:Edited event and send the entire payload over.
+   // together along with either our data sent directly, or an OrderID with ticket population
+   // added. The former is nice because this means that we don't have to have refs inside of
+   // our customer service and logically gives us better flow. I'll comment out
+   // implementations to see what suits us better
+
+   // customer: CustomerDoc;
+   customer_id: string;
    chow_being_ordered: ChowDoc;
 }
 
@@ -26,7 +41,9 @@ interface OrderDoc extends mongoose.Document {
    is_delivery: boolean;
    driver_paid: boolean;
    warehouse_paid: boolean;
-   customer: CustomerDoc;
+
+   // customer: CustomerDoc;
+   customer_id: string;
    chow_being_ordered: ChowDoc;
 }
 
@@ -44,10 +61,11 @@ const orderSchema = new mongoose.Schema(
       warehouse_paid: { type: Boolean, required: true },
 
       // Setting up reference for our Customer and our stock
-      customer: {
-         type: mongoose.Schema.Types.ObjectId,
-         ref: "Customer",
-      },
+      // customer: {
+      //    type: mongoose.Schema.Types.ObjectId,
+      //    ref: "Customer",
+      // },
+      customer_id: { type: String, required: true },
       chow_being_ordered: {
          type: mongoose.Schema.Types.ObjectId,
          ref: "Chow",
