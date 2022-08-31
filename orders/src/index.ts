@@ -1,6 +1,9 @@
 import mongoose from "mongoose";
 
 import { app } from "./app";
+import { CustomerCreatedListener } from "./events/listeners/customer-created-listener";
+import { CustomerDeletedListener } from "./events/listeners/customer-deleted-listener";
+import { CustomerUpdatedListener } from "./events/listeners/customer-updated-listener";
 import { natsWrapper } from "./nats-wrapper";
 
 const start = async () => {
@@ -20,6 +23,7 @@ const start = async () => {
       throw new Error("NATS_CLUSTER_ID must be defined");
    }
 
+   // NATS initialization
    try {
       await natsWrapper.connect(
          process.env.NATS_CLUSTER_ID,
@@ -40,6 +44,11 @@ const start = async () => {
    } catch (error) {
       console.error(error);
    }
+
+   // NATS List of listeners (nyeheheh say that 3 times fast)
+   new CustomerCreatedListener(natsWrapper.client).listen();
+   new CustomerUpdatedListener(natsWrapper.client).listen();
+   new CustomerDeletedListener(natsWrapper.client).listen();
 
    app.listen(3000, () => {
       console.log("Listening on port 3000");
