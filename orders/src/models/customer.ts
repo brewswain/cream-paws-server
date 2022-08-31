@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 interface CustomerAttrs {
+   id: string;
    name: string;
    pets?: string[];
 }
@@ -30,7 +31,11 @@ const customerSchema = new mongoose.Schema(
 );
 
 customerSchema.statics.build = (attrs: CustomerAttrs) => {
-   return new Customer(attrs);
+   return new Customer({
+      _id: attrs.id,
+      name: attrs.name,
+      pets: attrs.pets,
+   });
 };
 
 const Customer = mongoose.model<CustomerDoc, CustomerModel>(

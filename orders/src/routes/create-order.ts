@@ -20,6 +20,7 @@ router.post(
    validateRequest,
    async (req: Request, res: Response) => {
       const {
+         id,
          delivery_date,
          payment_made,
          payment_date,
@@ -41,6 +42,7 @@ router.post(
       }
 
       const order = Order.build({
+         id,
          delivery_date,
          payment_made,
          payment_date,

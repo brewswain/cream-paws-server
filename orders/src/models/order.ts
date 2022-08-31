@@ -3,6 +3,7 @@ import { ChowDoc } from "./chow";
 import { CustomerDoc } from "./customer";
 
 interface OrderAttrs {
+   id: string;
    delivery_date: string;
    payment_made: boolean;
    payment_date: string;
@@ -82,7 +83,17 @@ const orderSchema = new mongoose.Schema(
 );
 
 orderSchema.statics.build = (attrs: OrderAttrs) => {
-   return new Order(attrs);
+   return new Order({
+      delivery_date: attrs.delivery_date,
+      payment_made: attrs.payment_made,
+      payment_date: attrs.payment_date,
+      is_delivery: attrs.is_delivery,
+      driver_paid: attrs.driver_paid,
+      warehouse_paid: attrs.warehouse_paid,
+      _id: attrs.id,
+      customer_id: attrs.customer_id,
+      chow_being_ordered: attrs.chow_being_ordered,
+   });
 };
 
 const Order = mongoose.model<OrderDoc, OrderModel>("Order", orderSchema);
