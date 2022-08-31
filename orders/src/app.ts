@@ -15,6 +15,7 @@ import { deleteOrderRouter } from "./routes/delete-order";
 import { findOrderRouter } from "./routes/find-order";
 import { getAllOrdersRouter } from "./routes/get-all-orders";
 import { updateOrderRouter } from "./routes/update-order";
+import { getAllCustomersRouter } from "./routes/get-customers-orders";
 
 export const app = express();
 // Traffic is proxied to our app through ingress nginx so we need this setting
@@ -34,6 +35,7 @@ app.use(createOrderRouter);
 app.use(deleteOrderRouter);
 app.use(findOrderRouter);
 app.use(getAllOrdersRouter);
+app.use(getAllCustomersRouter);
 app.use(updateOrderRouter);
 
 // Looks for any requests that don't exist to throw our 404.
