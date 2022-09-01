@@ -12,14 +12,13 @@ export class CustomerDeletedListener extends Listener<CustomerDeletedEvent> {
    queueGroupName = QueueGroup.Orders;
 
    async onMessage(data: CustomerDeletedEvent["data"], msg: Message) {
-      const { id } = data;
-      const customer = await Customer.findById(id);
+      const customer = await Customer.findByEventVersion(data);
 
       if (!customer) {
          throw new Error("Customer does not exist");
       }
 
-      await customer.deleteOne({ id });
+      await customer.deleteOne({ id: data.id });
 
       msg.ack();
    }

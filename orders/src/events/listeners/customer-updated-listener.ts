@@ -12,8 +12,8 @@ export class CustomerUpdatedListener extends Listener<CustomerUpdatedEvent> {
    queueGroupName = QueueGroup.Orders;
 
    async onMessage(data: CustomerUpdatedEvent["data"], msg: Message) {
-      const { id, name, pets } = data;
-      const customer = await Customer.findById(id);
+      const { name, pets } = data;
+      const customer = await Customer.findByEventVersion(data);
 
       if (!customer) {
          throw new Error("Customer not found");
