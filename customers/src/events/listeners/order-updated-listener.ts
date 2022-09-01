@@ -13,7 +13,8 @@ export class OrderUpdatedListener extends Listener<OrderUpdatedEvent> {
    queueGroupName = QueueGroup.Customers;
 
    async onMessage(data: OrderUpdatedEvent["data"], msg: Message) {
-      const customer = await Customer.findById(data.customer_id);
+      const { customer_id } = data;
+      const customer = await Customer.findOne({ customer_id });
 
       if (!customer) {
          throw new Error("Customer not found, check ID or version number");

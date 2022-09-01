@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { updateIfCurrentPlugin } from "mongoose-update-if-current";
 
 interface ChowAttrs {
+   id: string;
    brand: string;
    target_group: string;
    flavour: string;
@@ -11,6 +12,7 @@ interface ChowAttrs {
    wholesale_price: number;
    retail_price: number;
    is_paid_for: boolean;
+   version: number;
 }
 
 export interface ChowDoc extends mongoose.Document {

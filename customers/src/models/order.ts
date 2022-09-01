@@ -4,6 +4,7 @@ import { ChowDoc } from "./chow";
 
 interface OrderAttrs {
    id: string;
+   version: number;
    delivery_date: string;
    payment_made: boolean;
    payment_date: string;
@@ -76,17 +77,7 @@ orderSchema.statics.findByEventVersion = (event: {
 };
 
 orderSchema.statics.build = (attrs: OrderAttrs) => {
-   return new Order({
-      delivery_date: attrs.delivery_date,
-      payment_made: attrs.payment_made,
-      payment_date: attrs.payment_date,
-      is_delivery: attrs.is_delivery,
-      driver_paid: attrs.driver_paid,
-      warehouse_paid: attrs.warehouse_paid,
-      _id: attrs.id,
-      customer_id: attrs.customer_id,
-      chow_being_ordered: attrs.chow_being_ordered,
-   });
+   return new Order(attrs);
 };
 
 const Order = mongoose.model<OrderDoc, OrderModel>("Order", orderSchema);
