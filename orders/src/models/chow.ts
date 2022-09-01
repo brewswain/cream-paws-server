@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
+import { updateIfCurrentPlugin } from "mongoose-update-if-current";
 
 interface ChowAttrs {
+   id: string;
    brand: string;
    target_group: string;
    flavour: string;
@@ -13,6 +15,8 @@ interface ChowAttrs {
 }
 
 export interface ChowDoc extends mongoose.Document {
+   // We expect an ID here since it's being sent to us as an event
+   id: string;
    brand: string;
    target_group: string;
    flavour: string;
@@ -22,10 +26,16 @@ export interface ChowDoc extends mongoose.Document {
    wholesale_price: number;
    retail_price: number;
    is_paid_for: boolean;
+   version: number;
 }
 
 interface ChowModel extends mongoose.Model<ChowDoc> {
    build(attrs: ChowAttrs): ChowDoc;
+
+   findByEventVersion(event: {
+      id: string;
+      version: number;
+   }): Promise<ChowDoc | null>;
 }
 
 const chowSchema = new mongoose.Schema(
@@ -50,6 +60,18 @@ const chowSchema = new mongoose.Schema(
    }
 );
 
+chowSchema.set("versionKey", "version");
+chowSchema.plugin(updateIfCurrentPlugin);
+
+chowSchema.statics.findByEventVersion = (event: {
+   id: string;
+   version: number;
+}) => {
+   return Chow.findOne({
+      _id: event.id,
+      version: event.version - 1,
+   });
+};
 chowSchema.statics.build = (attrs: ChowAttrs) => {
    return new Chow(attrs);
 };

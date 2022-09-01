@@ -20,7 +20,6 @@ router.post(
    validateRequest,
    async (req: Request, res: Response) => {
       const {
-         id,
          delivery_date,
          payment_made,
          payment_date,
@@ -33,16 +32,15 @@ router.post(
 
       const customer = await Customer.findById(customer_id);
       if (!customer) {
-         throw new NotFoundError();
+         throw new Error("customer not found");
       }
 
       const chow = await Chow.findById(chow_id);
       if (!chow) {
-         throw new NotFoundError();
+         throw new Error("chow not found");
       }
 
       const order = Order.build({
-         id,
          delivery_date,
          payment_made,
          payment_date,
@@ -56,6 +54,8 @@ router.post(
       await order.save();
 
       new OrderCreatedPublisher(natsWrapper.client).publish({
+         id: order.id,
+         version: order.version,
          delivery_date: order.delivery_date,
          payment_made: order.payment_made,
          payment_date: order.payment_date,
@@ -63,11 +63,7 @@ router.post(
          driver_paid: order.driver_paid,
          warehouse_paid: order.warehouse_paid,
          customer_id: order.customer_id,
-         // customer: {
-
-         // }
          chow_being_ordered: chow,
-         // id: order.id,
       });
 
       res.status(201).send(order);
