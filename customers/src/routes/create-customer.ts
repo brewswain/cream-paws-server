@@ -19,6 +19,7 @@ router.post(
       const customer = Customer.build({
          name,
          pets: req.body.pets || [],
+         orders: [],
       });
 
       await customer.save();

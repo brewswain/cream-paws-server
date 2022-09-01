@@ -1,15 +1,18 @@
 import mongoose from "mongoose";
 import { updateIfCurrentPlugin } from "mongoose-update-if-current";
+import { OrderDoc } from "./order";
 
 interface CustomerAttrs {
    name: string;
    pets?: string[];
+   orders?: OrderDoc[];
 }
 
 interface CustomerDoc extends mongoose.Document {
    name: string;
    pets?: string[];
    version: number;
+   orders?: OrderDoc[];
 }
 
 interface CustomerModel extends mongoose.Model<CustomerDoc> {
@@ -19,7 +22,8 @@ interface CustomerModel extends mongoose.Model<CustomerDoc> {
 const customerSchema = new mongoose.Schema(
    {
       name: { type: String, required: true },
-      pets: [{ type: String, required: false }],
+      pets: [{ type: String }],
+      orders: [{ type: mongoose.Schema.Types.ObjectId, ref: "Order" }],
    },
    {
       toJSON: {
