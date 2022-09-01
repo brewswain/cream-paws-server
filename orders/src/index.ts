@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 import { app } from "./app";
+import { ChowCreatedListener } from "./events/listeners/chow-created-listener";
 import { CustomerCreatedListener } from "./events/listeners/customer-created-listener";
 import { CustomerDeletedListener } from "./events/listeners/customer-deleted-listener";
 import { CustomerUpdatedListener } from "./events/listeners/customer-updated-listener";
@@ -46,6 +47,8 @@ const start = async () => {
    }
 
    // NATS List of listeners (nyeheheh say that 3 times fast)
+   new ChowCreatedListener(natsWrapper.client).listen();
+
    new CustomerCreatedListener(natsWrapper.client).listen();
    new CustomerUpdatedListener(natsWrapper.client).listen();
    new CustomerDeletedListener(natsWrapper.client).listen();

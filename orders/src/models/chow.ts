@@ -72,8 +72,20 @@ chowSchema.statics.findByEventVersion = (event: {
       version: event.version - 1,
    });
 };
+
 chowSchema.statics.build = (attrs: ChowAttrs) => {
-   return new Chow(attrs);
+   return new Chow({
+      _id: attrs.id,
+      brand: attrs.brand,
+      target_group: attrs.target_group,
+      flavour: attrs.flavour,
+      size: attrs.size,
+      unit: attrs.unit,
+      quantity: attrs.quantity,
+      wholesale_price: attrs.wholesale_price,
+      retail_price: attrs.retail_price,
+      is_paid_for: attrs.is_paid_for,
+   });
 };
 
 const Chow = mongoose.model<ChowDoc, ChowModel>("Chow", chowSchema);
