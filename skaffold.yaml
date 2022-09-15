@@ -40,3 +40,15 @@ build:
            manual:
               - src: "src/**/*.ts"
                 dest: .
+      - image: brewswain/cream-paws-client
+        context: client
+        docker:
+           dockerfile: Dockerfile
+        sync:
+           manual:
+              - src: "**/*.ts"
+                dest: .
+              - src: "**/*.tsx"
+                dest: .
+              - src: "**/*.js"
+                dest: .

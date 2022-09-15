@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+   name: cream-paws-client-depl
+spec:
+   replicas: 1
+   selector:
+      matchLabels:
+         app: cream-paws-client
+   template:
+      metadata:
+         labels:
+            app: cream-paws-client
+      spec:
+         containers:
+            - name: client
+              image: brewswain/cream-paws-client
+              env:
+                 #   - name: EXPO_DEVTOOLS_LISTEN_ADDRESS
+                 #     value: 0.0.0.0
+                 - name: REACT_NATIVE_PACKAGER_HOSTNAME
+                   value: 192.168.100.193
+---
+apiVersion: v1
+kind: Service
+metadata:
+   name: cream-paws-client-srv
+spec:
+   selector:
+      app: cream-paws-client
+   ports:
+      - name: cream-paws-client
+        protocol: TCP
+        port: 19000
+        targetPort: 19000
+      - name: cream-paws-client-two
+        protocol: TCP
+        port: 19001
+        targetPort: 19001
+      - name: cream-paws-client-three
+        protocol: TCP
+        port: 19002
+        targetPort: 19002
+      - name: cream-paws-client-four
+        protocol: TCP
+        port: 19006
+        targetPort: 19006

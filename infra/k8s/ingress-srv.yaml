@@ -38,3 +38,10 @@ spec:
                       name: cream-paws-orders-srv
                       port:
                          number: 3000
+              - path: /?(.*)
+                pathType: Prefix
+                backend:
+                   service:
+                      name: cream-paws-client-srv
+                      port:
+                         number: 19000
