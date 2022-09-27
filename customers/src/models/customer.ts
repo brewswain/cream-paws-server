@@ -17,13 +17,25 @@ interface CustomerDoc extends mongoose.Document {
 
 interface CustomerModel extends mongoose.Model<CustomerDoc> {
    build(attrs: CustomerAttrs): CustomerDoc;
+
+   findByEventVersion(event: {
+      id: string;
+      version: number;
+   }): Promise<CustomerDoc | null>;
 }
 
 const customerSchema = new mongoose.Schema(
    {
       name: { type: String, required: true },
       pets: [{ type: String }],
-      orders: [{ type: mongoose.Schema.Types.ObjectId, ref: "Order" }],
+      // Types.Mixed here prevents only our orderID from being set when we're creating new
+      // order and embedding it onto our customer.
+      orders: [
+         {
+            type: mongoose.Schema.Types.Mixed,
+            ref: "Order",
+         },
+      ],
    },
    {
       toJSON: {
@@ -37,6 +49,16 @@ const customerSchema = new mongoose.Schema(
 
 customerSchema.set("versionKey", "version");
 customerSchema.plugin(updateIfCurrentPlugin);
+
+customerSchema.statics.findByEventVersion = (event: {
+   id: string;
+   version: number;
+}) => {
+   return Customer.findOne({
+      _id: event.id,
+      version: event.version - 1,
+   });
+};
 
 customerSchema.statics.build = (attrs: CustomerAttrs) => {
    return new Customer(attrs);
