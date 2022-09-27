@@ -1,7 +1,9 @@
 import mongoose from "mongoose";
 
 import { app } from "./app";
+import { ChowCreatedListener } from "./events/listeners/chow-created-listener";
 import { OrderCreatedListener } from "./events/listeners/order-created-listener";
+import { OrderDeletedListener } from "./events/listeners/order-deleted-listener";
 import { OrderUpdatedListener } from "./events/listeners/order-updated-listener";
 import { natsWrapper } from "./nats-wrapper";
 
@@ -43,8 +45,10 @@ const start = async () => {
       console.error(error);
    }
 
+   new ChowCreatedListener(natsWrapper.client).listen();
    new OrderCreatedListener(natsWrapper.client).listen();
    new OrderUpdatedListener(natsWrapper.client).listen();
+   new OrderDeletedListener(natsWrapper.client).listen();
 
    app.listen(3000, () => {
       console.log("Listening on port 3000");
