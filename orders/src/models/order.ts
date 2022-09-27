@@ -32,7 +32,7 @@ interface OrderAttrs {
 
    // customer: CustomerDoc;
    customer_id: string;
-   chow_being_ordered: ChowDoc;
+   chow_id?: string;
 }
 
 interface OrderDoc extends mongoose.Document {
@@ -46,7 +46,7 @@ interface OrderDoc extends mongoose.Document {
 
    // customer: CustomerDoc;
    customer_id: string;
-   chow_being_ordered: ChowDoc;
+   chow_id?: string;
 }
 
 interface OrderModel extends mongoose.Model<OrderDoc> {
@@ -68,10 +68,11 @@ const orderSchema = new mongoose.Schema(
       //    ref: "Customer",
       // },
       customer_id: { type: String, required: true },
-      chow_being_ordered: {
-         type: mongoose.Schema.Types.ObjectId,
-         ref: "Chow",
-      },
+      // chow_being_ordered: {
+      //    type: mongoose.Schema.Types.ObjectId,
+      //    ref: "Chow",
+      // },
+      chow_id: { type: String },
    },
    {
       toJSON: {
@@ -105,7 +106,7 @@ orderSchema.statics.build = (attrs: OrderAttrs) => {
       driver_paid: attrs.driver_paid,
       warehouse_paid: attrs.warehouse_paid,
       customer_id: attrs.customer_id,
-      chow_being_ordered: attrs.chow_being_ordered,
+      chow_id: attrs.chow_id,
    });
 };
 
