@@ -15,9 +15,9 @@ const router = express.Router();
 
 router.post(
    "/api/orders",
-   requireAuth,
-   [],
-   validateRequest,
+   // requireAuth,
+   // [],
+   // validateRequest,
    async (req: Request, res: Response) => {
       const {
          delivery_date,
@@ -48,7 +48,7 @@ router.post(
          driver_paid,
          warehouse_paid,
          customer_id,
-         chow_being_ordered: chow,
+         chow_id,
       });
 
       await order.save();
@@ -63,7 +63,7 @@ router.post(
          driver_paid: order.driver_paid,
          warehouse_paid: order.warehouse_paid,
          customer_id: order.customer_id,
-         chow_being_ordered: chow,
+         chow_id: order.chow_id,
       });
 
       res.status(201).send(order);
