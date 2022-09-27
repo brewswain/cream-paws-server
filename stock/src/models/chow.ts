@@ -34,10 +34,10 @@ enum ChowUnit {
 }
 interface ChowAttrs {
    brand: string;
-   target_group: ChowTargetGroup;
-   flavour: ChowLine;
+   target_group: string;
+   flavour: string;
    size: number;
-   unit: ChowUnit;
+   unit: string;
    quantity: number;
    wholesale_price: number;
    retail_price: number;
@@ -46,10 +46,10 @@ interface ChowAttrs {
 
 interface ChowDoc extends mongoose.Document {
    brand: string;
-   target_group: ChowTargetGroup;
-   flavour: ChowLine;
+   target_group: string;
+   flavour: string;
    size: number;
-   unit: ChowUnit;
+   unit: string;
    quantity: number;
    wholesale_price: number;
    retail_price: number;
