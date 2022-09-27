@@ -5,15 +5,18 @@ import {
    requireAuth,
    validateRequest,
 } from "@cream-paws-util/common";
+
 import { Chow } from "../models/chow";
+import { ChowUpdatedPublisher } from "../events/publishers/chow-updated-publisher";
+import { natsWrapper } from "../nats-wrapper";
 
 const router = express.Router();
 
 router.put(
    "/api/stock/:id",
-   requireAuth,
+   // requireAuth,
    [],
-   validateRequest,
+   // validateRequest,
    async (req: Request, res: Response) => {
       const chow = await Chow.findById(req.params.id);
 
@@ -24,7 +27,7 @@ router.put(
       // TODO: create user role here -- if user not admin throw new notauthorized error
 
       chow.set({
-         brand: req.body.brand,
+         brand: chow.brand,
          target_group: req.body.target_group,
          flavour: req.body.flavour,
          size: req.body.size,
@@ -37,7 +40,21 @@ router.put(
 
       await chow.save();
 
-      res.send(chow);
+      new ChowUpdatedPublisher(natsWrapper.client).publish({
+         brand: chow.brand,
+         target_group: chow.target_group,
+         flavour: chow.flavour,
+         size: chow.size,
+         unit: chow.unit,
+         quantity: chow.quantity,
+         wholesale_price: chow.wholesale_price,
+         retail_price: chow.retail_price,
+         is_paid_for: chow.is_paid_for,
+         version: chow.version,
+         id: chow.id,
+      });
+
+      res.status(201).send(chow);
    }
 );
 
