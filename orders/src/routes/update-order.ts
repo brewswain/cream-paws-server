@@ -13,19 +13,28 @@ const router = express.Router();
 
 router.put(
    "/api/orders/:id",
-   requireAuth,
+   // requireAuth,
    [],
-   validateRequest,
+   // validateRequest,
    async (req: Request, res: Response) => {
-      const order = await Order.findById(req.params.id).populate("chow");
+      const order = await Order.findById(req.params.id);
+      // .populate("Chow");
 
       if (!order) {
          throw new NotFoundError();
       }
 
       order.set({
-         name: req.body.name,
-         pets: req.body.pets,
+         id: req.body.id,
+         delivery_date: req.body.delivery_date,
+         version: req.body.version,
+         payment_made: req.body.payment_made,
+         payment_date: req.body.payment_date,
+         is_delivery: req.body.is_delivery,
+         driver_paid: req.body.driver_paid,
+         warehouse_paid: req.body.warehouse_paid,
+         customer_id: req.body.customer_id,
+         chow_id: req.body.chow_id,
       });
       await order.save();
 
@@ -39,7 +48,7 @@ router.put(
          driver_paid: order.driver_paid,
          warehouse_paid: order.warehouse_paid,
          customer_id: order.customer_id,
-         chow_being_ordered: order.chow_being_ordered,
+         chow_id: order.chow_id,
       });
 
       res.send(order);
