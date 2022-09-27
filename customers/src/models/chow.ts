@@ -16,6 +16,7 @@ interface ChowAttrs {
 
 export interface ChowDoc extends mongoose.Document {
    brand: string;
+   id: string;
    target_group: string;
    flavour: string;
    size: number;

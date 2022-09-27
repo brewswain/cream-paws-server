@@ -18,14 +18,13 @@ router.put(
    // validateRequest,
    async (req: Request, res: Response) => {
       const order = await Order.findById(req.params.id);
-      // .populate("Chow");
 
       if (!order) {
          throw new NotFoundError();
       }
 
       order.set({
-         id: req.body.id,
+         id: req.params.id,
          delivery_date: req.body.delivery_date,
          version: req.body.version,
          payment_made: req.body.payment_made,

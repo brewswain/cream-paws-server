@@ -25,8 +25,10 @@ export class ChowCreatedListener extends Listener<ChowCreatedEvent> {
          is_paid_for,
       } = data;
 
+      console.log("chow data from customers service", data);
+
       const chow = Chow.build({
-         id,
+         id: data.id,
          brand,
          target_group,
          flavour,
@@ -37,7 +39,10 @@ export class ChowCreatedListener extends Listener<ChowCreatedEvent> {
          retail_price,
          is_paid_for,
       });
+
       await chow.save();
+
+      console.log({ chowId: chow.id });
 
       msg.ack();
    }

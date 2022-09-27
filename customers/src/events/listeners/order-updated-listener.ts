@@ -21,6 +21,7 @@ export class OrderUpdatedListener extends Listener<OrderUpdatedEvent> {
       const order = await Order.findOne({
          id: data.id,
       });
+      const chow = await Chow.findOne({ id: data.chow_id });
 
       const updatedOrderPayload = {
          id: data.id,
@@ -38,8 +39,15 @@ export class OrderUpdatedListener extends Listener<OrderUpdatedEvent> {
       console.log({ data, customer, order });
 
       if (!order) {
-         throw new Error("ORder not found, check ID or version number");
+         throw new Error("Order not found, check ID or version number");
       }
+
+      if (!chow) {
+         throw new Error("Chow not found, please check ID or version number");
+      }
+
+      order.set(updatedOrderPayload);
+      await order.save();
 
       if (!customer) {
          throw new Error("Customer not found, check ID or version number");
@@ -49,28 +57,37 @@ export class OrderUpdatedListener extends Listener<OrderUpdatedEvent> {
          throw new Error("This customer has no orders attached to it.");
       }
 
-      order.set(updatedOrderPayload);
-      await order.save();
-
-      console.log({ orders: customer.orders, data: data.id });
-
       let foundOrderIndex = customer.orders?.findIndex(
          (customerOrder) => customerOrder.id === data.id
       );
 
-      console.log({ foundOrderIndex });
-      if (!foundOrderIndex) {
-         throw new Error("Order not found, check ID or version number");
-      }
+      let updatedOrderArray = [];
 
-      const chow = await Chow.findById(data.chow_id);
-      if (!chow) {
-         throw new Error("Order not found, please check ID or version number");
-      }
+      updatedOrderArray.push(customer.orders);
 
-      customer.orders[foundOrderIndex].set(updatedOrderPayload);
+      updatedOrderArray[foundOrderIndex] = {
+         id: data.id,
+         version: data.version,
+         delivery_date: data.delivery_date,
+         payment_made: data.payment_made,
+         payment_date: data.payment_date,
+         is_delivery: data.is_delivery,
+         driver_paid: data.driver_paid,
+         warehouse_paid: data.warehouse_paid,
+         customer_id: data.customer_id,
+         chow_id: data.chow_id,
+         chow_details: data.chow_details,
+      };
+
+      customer.set({
+         orders: updatedOrderArray,
+      });
 
       await customer.save();
+
+      if (foundOrderIndex === -1 || foundOrderIndex === undefined) {
+         throw new Error("Order Index not found, check ID or version number");
+      }
 
       msg.ack();
    }
