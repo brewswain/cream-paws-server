@@ -5,34 +5,24 @@ import {
    SubjectsEnum,
 } from "@cream-paws-util/common";
 import { Message } from "node-nats-streaming";
+import { Chow } from "../../models/chow";
 
 import { Customer } from "../../models/customer";
+import { Order } from "../../models/order";
 
 export class OrderUpdatedListener extends Listener<OrderUpdatedEvent> {
    subject: SubjectsEnum.OrderUpdated = SubjectsEnum.OrderUpdated;
    queueGroupName = QueueGroup.Customers;
 
    async onMessage(data: OrderUpdatedEvent["data"], msg: Message) {
-      const { customer_id } = data;
-      const customer = await Customer.findOne({ customer_id });
+      const customer = await Customer.findOne({
+         id: data.customer_id,
+      });
+      const order = await Order.findOne({
+         id: data.id,
+      });
 
-      if (!customer) {
-         throw new Error("Customer not found, check ID or version number");
-      }
-
-      if (!customer.orders) {
-         throw new Error("This customer has no orders attached to it.");
-      }
-
-      let foundOrderIndex = customer.orders?.findIndex(
-         (order) => order.id === data.id
-      );
-
-      if (!foundOrderIndex) {
-         throw new Error("Order not found, check ID or version number");
-      }
-
-      customer.orders[foundOrderIndex].set({
+      const updatedOrderPayload = {
          id: data.id,
          version: data.version,
          delivery_date: data.delivery_date,
@@ -42,8 +32,43 @@ export class OrderUpdatedListener extends Listener<OrderUpdatedEvent> {
          driver_paid: data.driver_paid,
          warehouse_paid: data.warehouse_paid,
          customer_id: data.customer_id,
-         chow_being_ordered: data.chow_being_ordered,
-      });
+         chow_id: data.chow_id,
+         chow_details: data.chow_details,
+      };
+      console.log({ data, customer, order });
+
+      if (!order) {
+         throw new Error("ORder not found, check ID or version number");
+      }
+
+      if (!customer) {
+         throw new Error("Customer not found, check ID or version number");
+      }
+
+      if (!customer.orders) {
+         throw new Error("This customer has no orders attached to it.");
+      }
+
+      order.set(updatedOrderPayload);
+      await order.save();
+
+      console.log({ orders: customer.orders, data: data.id });
+
+      let foundOrderIndex = customer.orders?.findIndex(
+         (customerOrder) => customerOrder.id === data.id
+      );
+
+      console.log({ foundOrderIndex });
+      if (!foundOrderIndex) {
+         throw new Error("Order not found, check ID or version number");
+      }
+
+      const chow = await Chow.findById(data.chow_id);
+      if (!chow) {
+         throw new Error("Order not found, please check ID or version number");
+      }
+
+      customer.orders[foundOrderIndex].set(updatedOrderPayload);
 
       await customer.save();
 

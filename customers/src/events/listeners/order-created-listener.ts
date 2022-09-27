@@ -5,7 +5,7 @@ import {
    SubjectsEnum,
 } from "@cream-paws-util/common";
 import { Message } from "node-nats-streaming";
-import { Chow } from "../../models/chow";
+import { Chow, ChowDoc } from "../../models/chow";
 
 import { Customer } from "../../models/customer";
 import { Order } from "../../models/order";
@@ -16,6 +16,7 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
 
    async onMessage(data: OrderCreatedEvent["data"], msg: Message) {
       const customer = await Customer.findById(data.customer_id);
+      console.log({ data });
 
       if (!customer) {
          throw new Error("Customer not found, check ID or version number");
@@ -25,24 +26,29 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
          throw new Error("This customer has no orders attached to it.");
       }
 
+      const chowQuery = await Chow.findOne({ id: data.chow_id });
+      let chow;
       // TODO: fix this flow properly.
-      const chow = Chow.build({
-         id: data.chow_being_ordered.id,
-         brand: data.chow_being_ordered.brand,
-         target_group: data.chow_being_ordered.target_group,
-         flavour: data.chow_being_ordered.flavour,
-         size: data.chow_being_ordered.size,
-         unit: data.chow_being_ordered.unit,
-         quantity: data.chow_being_ordered.quantity,
-         wholesale_price: data.chow_being_ordered.wholesale_price,
-         retail_price: data.chow_being_ordered.retail_price,
-         is_paid_for: data.chow_being_ordered.is_paid_for,
-         version: data.chow_being_ordered.version,
-      });
+      if (chowQuery) {
+         chow = Chow.build({
+            id: chowQuery.id,
+            brand: chowQuery.brand,
+            target_group: chowQuery.target_group,
+            flavour: chowQuery.flavour,
+            size: chowQuery.size,
+            unit: chowQuery.unit,
+            quantity: chowQuery.quantity,
+            wholesale_price: chowQuery.wholesale_price,
+            retail_price: chowQuery.retail_price,
+            is_paid_for: chowQuery.is_paid_for,
+         });
 
-      await chow.save();
+         await chow.save();
+      } else {
+         throw new Error("Chow not found, check ID");
+      }
 
-      const order = Order.build({
+      const newOrderPayload = {
          id: data.id,
          version: data.version,
          delivery_date: data.delivery_date,
@@ -52,26 +58,29 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
          driver_paid: data.driver_paid,
          warehouse_paid: data.warehouse_paid,
          customer_id: data.customer_id,
-         chow_being_ordered: chow,
-      });
+         chow_details: chow,
+         chow_id: data.chow_id || undefined,
+      };
 
-      console.log("saving order", data.id);
+      const order = Order.build(newOrderPayload);
+
       await order.save();
-      console.log("order saved!");
 
+      console.log("saved order", order);
+      // console.log({ order, ordersArray: [...customer.orders, order] });
+
+      // TODO: check to see if it populates orderID on first order creation then sends proper order after
       customer.set({
          id: customer.id,
          name: customer.name,
          pets: customer.pets,
-         orders: [...customer.orders, order],
+         orders: [...customer.orders, newOrderPayload],
       });
 
-      let foundOrderIndex = customer.orders?.findIndex(
-         (order) => order.id === data.id
-      );
-
-      console.log({ customer, data });
       await customer.save();
+
+      // Testing for if we make a CustomerUpdatedPublisher
+      console.log({ customer });
 
       msg.ack();
    }
