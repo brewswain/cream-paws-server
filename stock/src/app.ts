@@ -14,6 +14,7 @@ import { getAllChowRouter } from "./routes/get-all-chow";
 import { createChowRouter } from "./routes/create-chow";
 import { findChowRouter } from "./routes/find-chow";
 import { updateChowRouter } from "./routes/update-chow";
+import { deleteChowRouter } from "./routes/delete-chow";
 
 export const app = express();
 // Traffic is proxied to our app through ingress nginx so we need this setting
@@ -32,6 +33,7 @@ app.use(currentUserMiddleware);
 app.use(getAllChowRouter);
 app.use(createChowRouter);
 app.use(updateChowRouter);
+app.use(deleteChowRouter);
 app.use(findChowRouter);
 
 // Looks for any requests that don't exist to throw our 404.
