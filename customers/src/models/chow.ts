@@ -12,7 +12,6 @@ interface ChowAttrs {
    wholesale_price: number;
    retail_price: number;
    is_paid_for: boolean;
-   version: number;
 }
 
 export interface ChowDoc extends mongoose.Document {
@@ -25,7 +24,6 @@ export interface ChowDoc extends mongoose.Document {
    wholesale_price: number;
    retail_price: number;
    is_paid_for: boolean;
-   version: number;
 }
 
 interface ChowModel extends mongoose.Model<ChowDoc> {
