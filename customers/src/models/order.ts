@@ -12,7 +12,8 @@ interface OrderAttrs {
    driver_paid: boolean;
    warehouse_paid: boolean;
    customer_id: string;
-   chow_being_ordered: ChowDoc;
+   chow_id?: string;
+   chow_details?: ChowDoc;
 }
 
 export interface OrderDoc extends mongoose.Document {
@@ -25,7 +26,8 @@ export interface OrderDoc extends mongoose.Document {
    driver_paid: boolean;
    warehouse_paid: boolean;
    customer_id: string;
-   chow_being_ordered: ChowDoc;
+   chow_id?: string;
+   chow_details?: ChowDoc;
 }
 
 interface OrderModel extends mongoose.Model<OrderDoc> {
@@ -47,9 +49,10 @@ const orderSchema = new mongoose.Schema(
       driver_paid: { type: Boolean, required: true },
       warehouse_paid: { type: Boolean, required: true },
       customer_id: { type: String, required: true },
+      chow_id: { type: String },
 
-      chow_being_ordered: {
-         type: mongoose.Schema.Types.ObjectId,
+      chow_details: {
+         type: mongoose.Schema.Types.Mixed,
          ref: "Chow",
       },
    },
