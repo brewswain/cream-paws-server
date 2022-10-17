@@ -9,9 +9,9 @@ const router = express.Router();
 
 router.post(
    "/api/stock",
-   requireAuth,
+   // requireAuth,
    [],
-   validateRequest,
+   // validateRequest,
    async (req: Request, res: Response) => {
       const {
          brand,
