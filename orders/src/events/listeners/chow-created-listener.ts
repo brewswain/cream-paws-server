@@ -11,6 +11,9 @@ export class ChowCreatedListener extends Listener<ChowCreatedEvent> {
    subject: SubjectsEnum.ChowCreated = SubjectsEnum.ChowCreated;
    queueGroupName = QueueGroup.Orders;
 
+   // TODO:
+   // Change this flow. This listener should just receive the chow's ID and append that to our Order.
+   // This will then get populated correctly inside of our Customers service.
    async onMessage(data: ChowCreatedEvent["data"], msg: Message) {
       const {
          id,
@@ -25,8 +28,10 @@ export class ChowCreatedListener extends Listener<ChowCreatedEvent> {
          is_paid_for,
       } = data;
 
+      console.log("chow data from orders service", data);
+
       const chow = Chow.build({
-         id,
+         id: id,
          brand,
          target_group,
          flavour,
