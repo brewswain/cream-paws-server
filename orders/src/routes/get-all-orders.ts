@@ -8,7 +8,7 @@ const router = express.Router();
 // This route retrieves all orders that the queried customer has
 router.get(
    "/api/orders",
-   [requireAuth, validateRequest],
+   // [requireAuth, validateRequest],
    async (req: Request, res: Response) => {
       const orders = await Order.find({});
 
