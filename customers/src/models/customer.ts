@@ -4,13 +4,15 @@ import { OrderDoc } from "./order";
 
 interface CustomerAttrs {
    name: string;
-   pets?: string[];
+   // pets?: string[];
+   pets?: [{ name: string; breed: string }];
    orders?: OrderDoc[];
 }
 
 interface CustomerDoc extends mongoose.Document {
    name: string;
-   pets?: string[];
+   // pets?: string[];
+   pets?: [{ name: string; breed: string }];
    version: number;
    orders?: OrderDoc[];
 }
@@ -27,7 +29,16 @@ interface CustomerModel extends mongoose.Model<CustomerDoc> {
 const customerSchema = new mongoose.Schema(
    {
       name: { type: String, required: true },
-      pets: [{ type: String }],
+      pets: [
+         {
+            name: {
+               type: String,
+            },
+            breed: {
+               type: String,
+            },
+         },
+      ],
       // Types.Mixed here prevents only our orderID from being set when we're creating new
       // order and embedding it onto our customer.
       orders: [

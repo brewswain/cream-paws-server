@@ -10,9 +10,9 @@ const router = express.Router();
 
 router.post(
    "/api/customer",
-   requireAuth,
+   // requireAuth,
    [body("name").not().isEmpty().withMessage("Customer name cannot be empty")],
-   validateRequest,
+   // validateRequest,
    async (req: Request, res: Response) => {
       const { name } = req.body;
 

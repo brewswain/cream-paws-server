@@ -14,8 +14,7 @@ export class OrderDeletedListener extends Listener<OrderDeletedEvent> {
 
    async onMessage(data: OrderDeletedEvent["data"], msg: Message) {
       const customer = await Customer.findById(data.customerId);
-      const order = await Order.findById(data.id);
-
+      const order = await Order.findOne({ id: data.id });
       if (!customer) {
          throw new Error(
             "Customer could not be found. Please check Order Deleted Event's customerId being sent."
@@ -34,20 +33,27 @@ export class OrderDeletedListener extends Listener<OrderDeletedEvent> {
          );
       }
 
-      await order.deleteOne({ id: data.id });
-
+      // This is left in to make sure the order exists
       let foundOrderIndex = customer.orders?.findIndex(
          (customerOrder) => customerOrder.id === data.id
       );
-      if (!foundOrderIndex) {
+
+      if (foundOrderIndex === -1 || foundOrderIndex === undefined) {
          throw new Error(
             "Order's Index not found, but exists in db. Please check customer."
          );
       }
 
-      await customer.orders[foundOrderIndex].deleteOne({ id: data.id });
+      let filteredArray = [];
+      const filteredOrders = customer.orders.filter(
+         (order) => order.id != data.id
+      );
 
-      await customer.save;
+      filteredArray.push(filteredOrders);
+
+      customer.set({ orders: filteredArray });
+
+      await customer.save();
 
       msg.ack();
    }

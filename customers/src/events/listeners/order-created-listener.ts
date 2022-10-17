@@ -16,7 +16,6 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
 
    async onMessage(data: OrderCreatedEvent["data"], msg: Message) {
       const customer = await Customer.findById(data.customer_id);
-      console.log({ data });
 
       if (!customer) {
          throw new Error("Customer not found, check ID or version number");
@@ -66,21 +65,12 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
 
       await order.save();
 
-      console.log("saved order", order);
-      // console.log({ order, ordersArray: [...customer.orders, order] });
-
-      // TODO: check to see if it populates orderID on first order creation then sends proper order after
       customer.set({
-         id: customer.id,
-         name: customer.name,
-         pets: customer.pets,
+         id: data.customer_id,
          orders: [...customer.orders, newOrderPayload],
       });
 
       await customer.save();
-
-      // Testing for if we make a CustomerUpdatedPublisher
-      console.log({ customer });
 
       msg.ack();
    }

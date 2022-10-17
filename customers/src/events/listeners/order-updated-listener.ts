@@ -36,7 +36,6 @@ export class OrderUpdatedListener extends Listener<OrderUpdatedEvent> {
          chow_id: data.chow_id,
          chow_details: data.chow_details,
       };
-      console.log({ data, customer, order });
 
       if (!order) {
          throw new Error("Order not found, check ID or version number");
@@ -46,9 +45,6 @@ export class OrderUpdatedListener extends Listener<OrderUpdatedEvent> {
          throw new Error("Chow not found, please check ID or version number");
       }
 
-      order.set(updatedOrderPayload);
-      await order.save();
-
       if (!customer) {
          throw new Error("Customer not found, check ID or version number");
       }
@@ -57,10 +53,16 @@ export class OrderUpdatedListener extends Listener<OrderUpdatedEvent> {
          throw new Error("This customer has no orders attached to it.");
       }
 
+      order.set(updatedOrderPayload);
+      await order.save();
+
       let foundOrderIndex = customer.orders?.findIndex(
          (customerOrder) => customerOrder.id === data.id
       );
 
+      if (foundOrderIndex === -1 || foundOrderIndex === undefined) {
+         throw new Error("Order Index not found, check ID or version number");
+      }
       let updatedOrderArray = [];
 
       updatedOrderArray.push(customer.orders);
@@ -84,10 +86,6 @@ export class OrderUpdatedListener extends Listener<OrderUpdatedEvent> {
       });
 
       await customer.save();
-
-      if (foundOrderIndex === -1 || foundOrderIndex === undefined) {
-         throw new Error("Order Index not found, check ID or version number");
-      }
 
       msg.ack();
    }
