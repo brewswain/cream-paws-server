@@ -13,10 +13,10 @@ import { Order } from "../../models/order";
 export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
    subject: SubjectsEnum.OrderCreated = SubjectsEnum.OrderCreated;
    queueGroupName = QueueGroup.Customers;
-
    async onMessage(data: OrderCreatedEvent["data"], msg: Message) {
       const customer = await Customer.findById(data.customer_id);
 
+      console.log({ data });
       if (!customer) {
          throw new Error("Customer not found, check ID or version number");
       }
@@ -36,7 +36,6 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
             flavour: chowQuery.flavour,
             size: chowQuery.size,
             unit: chowQuery.unit,
-            quantity: chowQuery.quantity,
             wholesale_price: chowQuery.wholesale_price,
             retail_price: chowQuery.retail_price,
             is_paid_for: chowQuery.is_paid_for,
@@ -54,6 +53,7 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
          payment_made: data.payment_made,
          payment_date: data.payment_date,
          is_delivery: data.is_delivery,
+         quantity: data.quantity,
          driver_paid: data.driver_paid,
          warehouse_paid: data.warehouse_paid,
          customer_id: data.customer_id,

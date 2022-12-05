@@ -8,6 +8,7 @@ interface OrderAttrs {
    payment_made: boolean;
    payment_date: string;
    is_delivery: boolean;
+   quantity: number;
    driver_paid: boolean;
    warehouse_paid: boolean;
 
@@ -40,6 +41,7 @@ interface OrderDoc extends mongoose.Document {
    payment_made: boolean;
    payment_date: string;
    is_delivery: boolean;
+   quantity: number;
    driver_paid: boolean;
    warehouse_paid: boolean;
    version: number;
@@ -59,6 +61,7 @@ const orderSchema = new mongoose.Schema(
       payment_date: { type: String, required: true },
       payment_made: { type: Boolean, required: true },
       is_delivery: { type: Boolean, required: true },
+      quantity: { type: Number, requires: true },
       driver_paid: { type: Boolean, required: true },
       warehouse_paid: { type: Boolean, required: true },
 
@@ -103,6 +106,7 @@ orderSchema.statics.build = (attrs: OrderAttrs) => {
       payment_made: attrs.payment_made,
       payment_date: attrs.payment_date,
       is_delivery: attrs.is_delivery,
+      quantity: attrs.quantity,
       driver_paid: attrs.driver_paid,
       warehouse_paid: attrs.warehouse_paid,
       customer_id: attrs.customer_id,

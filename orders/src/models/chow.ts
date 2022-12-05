@@ -8,7 +8,6 @@ interface ChowAttrs {
    flavour: string;
    size: number;
    unit: string;
-   quantity: number;
    wholesale_price: number;
    retail_price: number;
    is_paid_for: boolean;
@@ -22,7 +21,6 @@ export interface ChowDoc extends mongoose.Document {
    flavour: string;
    size: number;
    unit: string;
-   quantity: number;
    wholesale_price: number;
    retail_price: number;
    is_paid_for: boolean;
@@ -45,7 +43,6 @@ const chowSchema = new mongoose.Schema(
       flavour: { type: String, required: true },
       size: { type: Number, required: true },
       unit: { type: String, required: true },
-      quantity: { type: Number, required: true },
       wholesale_price: { type: Number, required: true },
       retail_price: { type: Number, required: true },
       is_paid_for: { type: Boolean, required: true },
@@ -81,7 +78,6 @@ chowSchema.statics.build = (attrs: ChowAttrs) => {
       flavour: attrs.flavour,
       size: attrs.size,
       unit: attrs.unit,
-      quantity: attrs.quantity,
       wholesale_price: attrs.wholesale_price,
       retail_price: attrs.retail_price,
       is_paid_for: attrs.is_paid_for,
