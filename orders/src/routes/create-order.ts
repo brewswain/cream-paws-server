@@ -53,11 +53,14 @@ router.post(
          chow_id,
       });
 
+      console.log({ customer });
+
       await order.save();
 
       new OrderCreatedPublisher(natsWrapper.client).publish({
          id: order.id,
          version: order.version,
+         customer_version: customer.version,
          delivery_date: order.delivery_date,
          payment_made: order.payment_made,
          payment_date: order.payment_date,
