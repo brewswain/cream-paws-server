@@ -18,7 +18,7 @@ router.post(
 
       const customer = Customer.build({
          name,
-         pets: req.body.pets || [],
+         pets: req.body.pets || undefined,
          orders: [],
       });
 
@@ -27,7 +27,7 @@ router.post(
       new CustomerCreatedPublisher(natsWrapper.client).publish({
          id: customer.id,
          name: customer.name,
-         pets: customer.pets || [],
+         pets: customer.pets || undefined,
          version: customer.version,
       });
 
