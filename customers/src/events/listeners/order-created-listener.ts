@@ -5,26 +5,17 @@ import {
    SubjectsEnum,
 } from "@cream-paws-util/common";
 import { Message } from "node-nats-streaming";
-import { Chow, ChowDoc } from "../../models/chow";
 
+import { Chow, ChowDoc } from "../../models/chow";
 import { Customer } from "../../models/customer";
 import { Order } from "../../models/order";
+import { natsWrapper } from "../../nats-wrapper";
+import { CustomerUpdatedPublisher } from "../publishers/customer-updated-publisher";
 
 export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
    subject: SubjectsEnum.OrderCreated = SubjectsEnum.OrderCreated;
    queueGroupName = QueueGroup.Customers;
    async onMessage(data: OrderCreatedEvent["data"], msg: Message) {
-      const customer = await Customer.findById(data.customer_id);
-
-      console.log({ data });
-      if (!customer) {
-         throw new Error("Customer not found, check ID or version number");
-      }
-
-      if (!customer.orders) {
-         throw new Error("This customer has no orders attached to it.");
-      }
-
       const chowQuery = await Chow.findOne({ id: data.chow_id });
       let chow;
       // TODO: fix this flow properly.
@@ -65,12 +56,12 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
 
       await order.save();
 
-      customer.set({
-         id: data.customer_id,
-         orders: [...customer.orders, newOrderPayload],
-      });
+      const customer = await Customer.findOne({ id: data.customer_id });
 
-      await customer.save();
+      await Customer.findOneAndUpdate(
+         { id: data.customer_id },
+         { orders: [...customer!.orders!, newOrderPayload] }
+      );
 
       msg.ack();
    }
