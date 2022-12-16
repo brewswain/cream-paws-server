@@ -4,12 +4,22 @@ import { updateIfCurrentPlugin } from "mongoose-update-if-current";
 interface CustomerAttrs {
    id: string;
    name: string;
-   pets?: string[];
+   pets?: [
+      {
+         name: string;
+         breed: string;
+      }
+   ];
 }
 
 export interface CustomerDoc extends mongoose.Document {
    name: string;
-   pets?: string[];
+   pets?: [
+      {
+         name: string;
+         breed: string;
+      }
+   ];
    version: number;
 }
 
@@ -36,6 +46,7 @@ const customerSchema = new mongoose.Schema(
       },
    }
 );
+
 customerSchema.set("versionKey", "version");
 customerSchema.plugin(updateIfCurrentPlugin);
 
@@ -48,6 +59,7 @@ customerSchema.statics.findByEventVersion = (event: {
       version: event.version - 1,
    });
 };
+
 customerSchema.statics.build = (attrs: CustomerAttrs) => {
    return new Customer({
       _id: attrs.id,
