@@ -60,9 +60,12 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
 
       await Customer.findOneAndUpdate(
          { id: data.customer_id },
-         { orders: [...customer!.orders!, newOrderPayload] }
+         { orders: [...customer!.orders!, order] }
       );
 
+      await customer?.save();
+
+      console.log({ order, customer });
       msg.ack();
    }
 }

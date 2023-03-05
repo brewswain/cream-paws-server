@@ -54,9 +54,13 @@ const orderSchema = new mongoose.Schema(
       customer_id: { type: String, required: true },
       chow_id: { type: String },
 
+      // chow_details: {
+      //    type: mongoose.Schema.Types.Mixed,
+      //    ref: "Chow",
+      // },
+      // Removing the ref fixes this fsr
       chow_details: {
          type: mongoose.Schema.Types.Mixed,
-         ref: "Chow",
       },
    },
    {
