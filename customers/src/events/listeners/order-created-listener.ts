@@ -56,16 +56,16 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
 
       await order.save();
 
-      const customer = await Customer.findOne({ id: data.customer_id });
+      const customerQuery = await Customer.findOne({ _id: data.customer_id });
 
-      await Customer.findOneAndUpdate(
-         { id: data.customer_id },
-         { orders: [...customer!.orders!, order] }
-      );
+      if (customerQuery) {
+         await customerQuery.updateOne({
+            orders: [...customerQuery!.orders!, order],
+         });
+      } else {
+         console.log("customer not found");
+      }
 
-      await customer?.save();
-
-      console.log({ order, customer });
       msg.ack();
    }
 }
