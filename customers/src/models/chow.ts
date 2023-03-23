@@ -36,6 +36,7 @@ interface ChowModel extends mongoose.Model<ChowDoc> {
 
 const chowSchema = new mongoose.Schema(
    {
+      id: { type: String, required: true },
       brand: { type: String, required: true },
       target_group: { type: String, required: true },
       flavour: { type: String, required: true },
