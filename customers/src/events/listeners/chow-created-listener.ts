@@ -25,7 +25,7 @@ export class ChowCreatedListener extends Listener<ChowCreatedEvent> {
       } = data;
 
       const chow = Chow.build({
-         id: data.id,
+         id,
          brand,
          target_group,
          flavour,
