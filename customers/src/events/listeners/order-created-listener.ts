@@ -31,8 +31,6 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
             retail_price: chowQuery.retail_price,
             is_paid_for: chowQuery.is_paid_for,
          });
-
-         await chow.save();
       } else {
          throw new Error("Chow not found, check ID");
       }
