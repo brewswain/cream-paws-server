@@ -14,7 +14,7 @@ const router = express.Router();
 router.put(
    "/api/orders/:id",
    // requireAuth,
-   [],
+   // [],
    // validateRequest,
    async (req: Request, res: Response) => {
       const order = await Order.findById(req.params.id);
