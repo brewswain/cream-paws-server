@@ -18,6 +18,8 @@ spec:
               env:
                  #   - name: EXPO_DEVTOOLS_LISTEN_ADDRESS
                  #     value: 0.0.0.0
+                 - name: EXPO_DEVTOOLS_LISTEN_ADDRESS
+                   value: 0.0.0.0
                  - name: REACT_NATIVE_PACKAGER_HOSTNAME
                    value: 192.168.101.118
 ---
