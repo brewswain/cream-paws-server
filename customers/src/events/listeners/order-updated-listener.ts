@@ -54,8 +54,7 @@ export class OrderUpdatedListener extends Listener<OrderUpdatedEvent> {
          throw new Error("This customer has no orders attached to it.");
       }
 
-      order.set(updatedOrderPayload);
-      await order.save();
+      await order.updateOne(updatedOrderPayload);
 
       let foundOrderIndex = customer.orders?.findIndex(
          (customerOrder) => customerOrder.id === data.id
@@ -83,11 +82,7 @@ export class OrderUpdatedListener extends Listener<OrderUpdatedEvent> {
          chow_details: data.chow_details,
       };
 
-      customer.set({
-         orders: updatedOrderArray,
-      });
-
-      await customer.save();
+      await customer.updateOne({ orders: updatedOrderArray });
 
       msg.ack();
    }
