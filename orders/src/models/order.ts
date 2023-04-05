@@ -34,6 +34,7 @@ interface OrderAttrs {
    // customer: CustomerDoc;
    customer_id: string;
    chow_id?: string;
+   chow_details?: ChowDoc;
 }
 
 interface OrderDoc extends mongoose.Document {
@@ -49,6 +50,7 @@ interface OrderDoc extends mongoose.Document {
    // customer: CustomerDoc;
    customer_id: string;
    chow_id?: string;
+   chow_details?: ChowDoc;
 }
 
 interface OrderModel extends mongoose.Model<OrderDoc> {

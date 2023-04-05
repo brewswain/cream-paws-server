@@ -79,7 +79,7 @@ export class OrderUpdatedListener extends Listener<OrderUpdatedEvent> {
          warehouse_paid: data.warehouse_paid,
          customer_id: data.customer_id,
          chow_id: data.chow_id,
-         chow_details: data.chow_details,
+         chow_details: chow,
       };
 
       await customer.updateOne({ orders: updatedOrderArray });
