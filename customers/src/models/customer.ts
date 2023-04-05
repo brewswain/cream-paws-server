@@ -64,6 +64,32 @@ interface CustomerModel extends mongoose.Model<CustomerDoc> {
    findByEventVersion(event: {
       id: string;
       version: number;
+      orders?: [
+         {
+            id: string;
+            version: number;
+            delivery_date: string;
+            payment_made: boolean;
+            payment_date: string;
+            is_delivery: boolean;
+            driver_paid: boolean;
+            warehouse_paid: boolean;
+            customer_id: string;
+            chow_id?: string;
+            chow_details?: {
+               id: string;
+               brand: string;
+               target_group: string;
+               flavour: string;
+               size: number;
+               unit: string;
+               quantity: number;
+               wholesale_price: number;
+               retail_price: number;
+               is_paid_for: boolean;
+            };
+         }
+      ];
    }): Promise<CustomerDoc | null>;
 }
 

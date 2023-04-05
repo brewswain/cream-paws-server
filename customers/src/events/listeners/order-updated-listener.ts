@@ -35,7 +35,7 @@ export class OrderUpdatedListener extends Listener<OrderUpdatedEvent> {
          warehouse_paid: data.warehouse_paid,
          customer_id: data.customer_id,
          chow_id: data.chow_id,
-         chow_details: data.chow_details,
+         chow_details: chow,
       };
 
       if (!order) {
@@ -63,26 +63,11 @@ export class OrderUpdatedListener extends Listener<OrderUpdatedEvent> {
       if (foundOrderIndex === -1 || foundOrderIndex === undefined) {
          throw new Error("Order Index not found, check ID or version number");
       }
-      let updatedOrderArray = [];
 
-      updatedOrderArray.push(customer.orders);
-
-      updatedOrderArray[foundOrderIndex] = {
-         id: data.id,
-         version: data.version,
-         delivery_date: data.delivery_date,
-         payment_made: data.payment_made,
-         payment_date: data.payment_date,
-         is_delivery: data.is_delivery,
-         quantity: data.quantity,
-         driver_paid: data.driver_paid,
-         warehouse_paid: data.warehouse_paid,
-         customer_id: data.customer_id,
-         chow_id: data.chow_id,
-         chow_details: chow,
-      };
-
-      await customer.updateOne({ orders: updatedOrderArray });
+      await Customer.findOneAndUpdate(
+         { "orders.id": data.id },
+         { "orders.$": updatedOrderPayload }
+      );
 
       msg.ack();
    }
